@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect, useRef } from "react";
 import { projectFireStore } from "../../firebase";
 import { useCleverContext } from "../../hooks/useCleverContext";
 import { useStyles } from "./style";
@@ -8,6 +8,7 @@ import { Context } from "../../state/state";
 function Todo() {
   const { state, dispatch } = useCleverContext(Context);
   const styles = useStyles();
+
   useEffect(() => {
     let results = [];
     projectFireStore
@@ -20,17 +21,15 @@ function Todo() {
 
         dispatch({ type: ACTION_TYPE.SET_SINGLE_TASKS, tasks: results });
       });
-    console.log(results);
   }, []);
-  console.log(state.tasks);
-  console.log(state.tasks[1]);
+
   return (
-    <div>
-      <h1>Todo</h1>
+    <div style={{ textAlign: "center" }}>
+      <h1>Single Board</h1>
       <div className={styles.todoDiv}>
         {state.tasks.map((task) => {
           return (
-            <div key={task.id}>
+            <div key={task.id} className={styles.todoItem}>
               <h3>{task.status}</h3>
               <h2>{task.title}</h2>
               <h4>{task.desc}</h4>
