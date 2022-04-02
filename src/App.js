@@ -1,24 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { Login } from "./pages/Login";
+import {
+  createContext,
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useState,
+} from "react";
+import { Outlet, Route, Routes } from "react-router-dom";
+import { Profile } from "./pages/profile";
+import { Home } from "./pages/Home";
+import ProtectedRoute from "./helpers/ProtectedRoute";
+import getUserLocalStorage from "./helpers/getUserLocalStorage";
+import { ContextProvider } from "./state/state";
+import { SingleBoardPage } from "./pages/SingleProduct/SingleBoardPage";
 
 function App() {
+  const [user, setUser] = useState({
+    name: "",
+    password: "",
+  });
+  useLayoutEffect(() => {
+    getUserLocalStorage();
+  }, [getUserLocalStorage()]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <ContextProvider>
+      <Routes>
+        <Route
+          path="/login"
+          element={<Login user={user} setUser={setUser} />}
+        />
+
+        <Route
+          path="/"
+          element={<ProtectedRoute isAllowed={!!getUserLocalStorage()} />}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <Route path="/" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/board/:boardId" element={<SingleBoardPage />} />
+        </Route>
+      </Routes>
+    </ContextProvider>
   );
 }
 
