@@ -1,0 +1,1 @@
+export { SingleBoardPage } from "./SingleBoardPage";
